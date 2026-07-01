@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FROST LAB · Granizados de Licor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05020e;
+    --bg2:#0b0620;
+    --neon-purple:#a11cff;
+    --neon-magenta:#ff26d0;
+    --neon-blue:#1fb6ff;
+    --neon-cyan:#22e6ff;
+    --gold:#ffc21c;
+    --green:#3dff88;
+    --text:#f3ecff;
+    --muted:#b9a9e0;
+    --card:rgba(20,10,45,.65);
+    --line:rgba(160,90,255,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(120,20,220,.35), transparent 40%),
+      radial-gradient(circle at 85% 20%, rgba(20,120,255,.30), transparent 42%),
+      radial-gradient(circle at 50% 100%, rgba(255,40,208,.18), transparent 45%),
+      var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.brand{font-family:'Orbitron',sans-serif;letter-spacing:1px}
+  a{color:inherit}
+
+  /* ---------- Language gate ---------- */
+  #lang-gate{
+    position:fixed;inset:0;z-index:1000;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(120,20,220,.5), transparent 55%),
+      var(--bg);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:24px;
+    transition:opacity .5s ease, visibility .5s;
+  }
+  #lang-gate.hidden{opacity:0;visibility:hidden;pointer-events:none}
+  #lang-gate img{width:230px;max-width:70vw;border-radius:22px;
+    box-shadow:0 0 60px rgba(161,28,255,.6);margin-bottom:26px}
+  #lang-gate p{color:var(--muted);margin-bottom:30px;font-size:1.05rem;letter-spacing:2px;text-transform:uppercase}
+  .lang-btns{display:flex;gap:22px;flex-wrap:wrap;justify-content:center}
+  .lang-btn{
+    cursor:pointer;font-family:'Orbitron';font-weight:700;font-size:1.1rem;
+    padding:18px 40px;border-radius:16px;color:#fff;
+    background:linear-gradient(135deg, rgba(161,28,255,.25), rgba(31,182,255,.25));
+    border:2px solid var(--neon-purple);
+    box-shadow:0 0 22px rgba(161,28,255,.5), inset 0 0 18px rgba(161,28,255,.2);
+    transition:transform .2s, box-shadow .2s;
+    display:flex;align-items:center;gap:12px;
+  }
+  .lang-btn:hover{transform:translateY(-4px) scale(1.04);
+    box-shadow:0 0 34px rgba(31,182,255,.8), inset 0 0 22px rgba(31,182,255,.3)}
+  .lang-btn .flag{font-size:1.5rem}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:40;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 20px;gap:14px;
+    background:rgba(6,3,18,.72);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .head-brand{display:flex;align-items:center;gap:12px}
+  .head-brand img{width:52px;height:52px;border-radius:12px;box-shadow:0 0 20px rgba(161,28,255,.6)}
+  .head-brand .t1{font-size:1.25rem;font-weight:900;
+    background:linear-gradient(90deg,#dff3ff,#7fd7ff,#c79bff);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .head-brand .t2{font-size:.62rem;letter-spacing:3px;color:var(--neon-cyan)}
+  .head-actions{display:flex;align-items:center;gap:10px}
+  .lang-switch{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .lang-switch button{background:transparent;color:var(--muted);border:0;padding:7px 11px;
+    font-family:'Orbitron';font-weight:700;font-size:.72rem;cursor:pointer}
+  .lang-switch button.active{background:linear-gradient(135deg,var(--neon-purple),var(--neon-blue));color:#fff}
+  .cart-toggle{
+    position:relative;cursor:pointer;border:0;border-radius:12px;padding:10px 16px;
+    font-family:'Orbitron';font-weight:700;font-size:.8rem;color:#fff;display:flex;align-items:center;gap:8px;
+    background:linear-gradient(135deg,var(--neon-magenta),var(--neon-purple));
+    box-shadow:0 0 20px rgba(255,38,208,.5)}
+  .cart-count{position:absolute;top:-8px;right:-8px;background:var(--gold);color:#221500;
+    font-family:'Poppins';font-weight:700;font-size:.7rem;min-width:22px;height:22px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(255,194,28,.8)}
+
+  /* ---------- Hero ---------- */
+  .hero{text-align:center;padding:38px 20px 10px}
+  .hero h1{font-size:clamp(2rem,7vw,3.6rem);font-weight:900;line-height:1;
+    background:linear-gradient(90deg,#e9dcff,#8fb8ff,#ff8ff0);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 30px rgba(161,28,255,.4)}
+  .hero .sub{color:var(--neon-cyan);letter-spacing:4px;margin-top:8px;font-size:.8rem;text-transform:uppercase}
+  .hero .tag{color:var(--muted);margin-top:10px;font-style:italic}
+  .promo{display:inline-flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:18px}
+  .promo span{border:1px solid var(--line);border-radius:30px;padding:7px 16px;font-size:.8rem;
+    background:rgba(161,28,255,.12);color:var(--text)}
+  .promo b{color:var(--gold)}
+
+  /* ---------- Menu grid ---------- */
+  .container{max-width:1180px;margin:0 auto;padding:26px 18px 140px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+  .card{
+    position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;
+    padding:22px;backdrop-filter:blur(8px);overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);transition:transform .25s, box-shadow .25s, border-color .25s;
+  }
+  .card:hover{transform:translateY(-6px);border-color:var(--neon-purple);
+    box-shadow:0 0 34px rgba(161,28,255,.35)}
+  .card::before{content:"";position:absolute;top:-40%;right:-30%;width:180px;height:180px;
+    background:radial-gradient(circle,rgba(31,182,255,.35),transparent 70%);filter:blur(6px)}
+  .card.premium{border-color:var(--gold);box-shadow:0 0 26px rgba(255,194,28,.25)}
+  .badge{position:absolute;top:14px;right:14px;font-family:'Orbitron';font-weight:700;font-size:.6rem;
+    letter-spacing:1px;padding:5px 10px;border-radius:20px;color:#241700;
+    background:linear-gradient(135deg,var(--gold),#ffe58a);box-shadow:0 0 14px rgba(255,194,28,.6)}
+  .card h3{font-size:1.25rem;line-height:1.1;position:relative;
+    background:linear-gradient(90deg,#fff,#c9b3ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .card .liquor{display:inline-block;margin-top:6px;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;
+    color:var(--neon-cyan)}
+  .card .desc{color:var(--muted);font-size:.9rem;margin-top:12px;min-height:66px;line-height:1.5}
+  .card .row{display:flex;align-items:center;justify-content:space-between;margin-top:16px}
+  .price{font-family:'Orbitron';font-weight:900;font-size:1.7rem;color:var(--gold);
+    text-shadow:0 0 16px rgba(255,194,28,.5)}
+  .add-btn{cursor:pointer;border:0;border-radius:12px;padding:11px 18px;color:#fff;font-weight:700;
+    font-family:'Orbitron';font-size:.78rem;
+    background:linear-gradient(135deg,var(--neon-purple),var(--neon-blue));
+    box-shadow:0 0 18px rgba(31,182,255,.5);transition:transform .18s}
+  .add-btn:hover{transform:scale(1.06)}
+  .photo-card{padding:12px;display:flex;flex-direction:column;gap:12px}
+  .photo-card::before{display:none}
+  .flavor-img{width:100%;border-radius:14px;display:block;cursor:pointer;transition:transform .25s}
+  .photo-card:hover .flavor-img{transform:scale(1.015)}
+  .add-btn.full{width:100%;padding:14px;font-size:.9rem}
+  .wed-chip{cursor:pointer;border-color:var(--neon-magenta)!important;
+    background:linear-gradient(135deg,rgba(255,38,208,.25),rgba(255,194,28,.18))!important;
+    box-shadow:0 0 16px rgba(255,38,208,.5);animation:pulse 1.6s infinite}
+  .wed-chip b{color:var(--gold)}
+  @keyframes pulse{0%,100%{box-shadow:0 0 12px rgba(255,38,208,.4)}50%{box-shadow:0 0 24px rgba(255,38,208,.85)}}
+  .promo-modal{position:relative;width:min(430px,94vw);max-height:94vh;overflow-y:auto;border-radius:20px;text-align:center}
+  .promo-modal img{width:100%;display:block;border-radius:18px;box-shadow:0 0 46px rgba(255,38,208,.5)}
+  .promo-close{position:absolute;top:10px;right:10px;z-index:2;background:rgba(0,0,0,.65);border:1px solid var(--line);
+    color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.15rem;cursor:pointer}
+  .promo-close:hover{background:rgba(255,38,208,.6)}
+  .promo-cta{margin-top:14px}
+  .promo-fallback{flex-direction:column;gap:16px;padding:34px 22px;border-radius:18px;
+    background:radial-gradient(circle at 50% 0%,rgba(161,28,255,.35),transparent 60%),linear-gradient(160deg,#140a30,#07031a);
+    border:1px solid var(--neon-purple);box-shadow:0 0 40px rgba(161,28,255,.45)}
+  .pf-tag{align-self:center;font-family:'Orbitron';font-weight:700;font-size:.72rem;letter-spacing:2px;
+    padding:7px 16px;border-radius:30px;color:#fff;border:1px solid var(--neon-magenta);
+    background:rgba(255,38,208,.15);box-shadow:0 0 16px rgba(255,38,208,.5)}
+  .pf-h1{font-family:'Orbitron';font-weight:900;font-size:1.9rem;line-height:1.05;
+    background:linear-gradient(90deg,#dff3ff,#8fb8ff);-webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 30px rgba(31,182,255,.4)}
+  .pf-h2{font-size:1.15rem;color:var(--text)}
+  .pf-h2 b{color:var(--gold);text-shadow:0 0 14px rgba(255,194,28,.6)}
+
+  .section-title{font-size:1.4rem;margin:44px 0 6px;
+    background:linear-gradient(90deg,#dff3ff,#c79bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .section-sub{color:var(--muted);font-size:.85rem;margin-bottom:18px}
+
+  /* ---------- Modal (item config) ---------- */
+  .overlay{position:fixed;inset:0;z-index:200;background:rgba(3,1,10,.78);backdrop-filter:blur(6px);
+    display:none;align-items:center;justify-content:center;padding:16px}
+  .overlay.show{display:flex}
+  .modal{width:min(520px,96vw);max-height:92vh;overflow-y:auto;border-radius:22px;
+    background:linear-gradient(160deg,rgba(24,12,52,.98),rgba(10,5,26,.98));
+    border:1px solid var(--neon-purple);box-shadow:0 0 50px rgba(161,28,255,.5);padding:24px}
+  .modal h3{font-size:1.35rem}
+  .modal .liquor{color:var(--neon-cyan);font-size:.72rem;letter-spacing:1px;text-transform:uppercase}
+  .modal .mprice{color:var(--gold);font-family:'Orbitron';font-weight:700;margin-top:2px}
+  .qty{display:flex;align-items:center;gap:14px;margin:18px 0}
+  .qty .lbl{font-weight:600}
+  .stepper{display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .stepper button{width:40px;height:40px;background:rgba(161,28,255,.18);border:0;color:#fff;font-size:1.3rem;cursor:pointer}
+  .stepper button:hover{background:rgba(161,28,255,.4)}
+  .stepper .val{min-width:44px;text-align:center;font-family:'Orbitron';font-weight:700}
+  .extras-title{margin-top:8px;font-weight:600;font-size:.95rem;color:var(--neon-cyan)}
+  .extra-row{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:11px 12px;border:1px solid var(--line);border-radius:12px;margin-top:10px;
+    background:rgba(161,28,255,.06)}
+  .extra-row .info{display:flex;flex-direction:column}
+  .extra-row .info small{color:var(--muted)}
+  .extra-row .stepper button{width:34px;height:34px;font-size:1.1rem}
+  textarea{width:100%;margin-top:16px;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:12px;
+    color:var(--text);font-family:'Poppins';padding:12px;resize:vertical;min-height:64px;font-size:.9rem}
+  textarea:focus,input:focus,select:focus{outline:none;border-color:var(--neon-blue);box-shadow:0 0 12px rgba(31,182,255,.4)}
+  .modal-actions{display:flex;gap:12px;margin-top:20px}
+  .btn-ghost{flex:1;cursor:pointer;background:transparent;border:1px solid var(--line);color:var(--muted);
+    border-radius:12px;padding:13px;font-family:'Orbitron';font-weight:700;font-size:.8rem}
+  .btn-primary{flex:2;cursor:pointer;border:0;border-radius:12px;padding:13px;color:#fff;font-family:'Orbitron';
+    font-weight:700;font-size:.8rem;background:linear-gradient(135deg,var(--neon-magenta),var(--neon-purple));
+    box-shadow:0 0 20px rgba(255,38,208,.5)}
+  .btn-primary:hover,.btn-checkout:hover{filter:brightness(1.12)}
+
+  /* ---------- Cart drawer ---------- */
+  #cart{position:fixed;top:0;right:0;height:100%;width:min(420px,100vw);z-index:300;
+    background:linear-gradient(160deg,rgba(16,8,36,.99),rgba(7,3,20,.99));
+    border-left:1px solid var(--neon-purple);box-shadow:-10px 0 50px rgba(0,0,0,.6);
+    transform:translateX(105%);transition:transform .35s ease;display:flex;flex-direction:column}
+  #cart.open{transform:translateX(0)}
+  .cart-head{display:flex;align-items:center;justify-content:space-between;padding:20px;border-bottom:1px solid var(--line)}
+  .cart-head h2{font-size:1.2rem}
+  .cart-close{background:transparent;border:0;color:var(--muted);font-size:1.6rem;cursor:pointer;line-height:1}
+  .cart-body{flex:1;overflow-y:auto;padding:16px 18px}
+  .cart-empty{text-align:center;color:var(--muted);margin-top:60px}
+  .cart-empty span{font-size:3rem;display:block;margin-bottom:10px}
+  .citem{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;background:rgba(161,28,255,.06)}
+  .citem .top{display:flex;justify-content:space-between;gap:8px}
+  .citem .name{font-weight:600}
+  .citem .name small{display:block;color:var(--neon-cyan);font-size:.66rem;letter-spacing:1px;text-transform:uppercase}
+  .citem .lineprice{color:var(--gold);font-family:'Orbitron';font-weight:700;white-space:nowrap}
+  .citem .ex{color:var(--muted);font-size:.8rem;margin-top:6px}
+  .citem .ex li{margin-left:14px}
+  .citem .note{color:#e9c6ff;font-size:.8rem;margin-top:6px;font-style:italic}
+  .citem .ctrls{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+  .citem .stepper button{width:30px;height:30px;font-size:1rem}
+  .citem .remove{background:transparent;border:0;color:#ff6b8a;cursor:pointer;font-size:.78rem;text-decoration:underline}
+  .cart-foot{border-top:1px solid var(--line);padding:18px}
+  .totrow{display:flex;justify-content:space-between;font-family:'Orbitron';font-weight:700;font-size:1.25rem;margin-bottom:14px}
+  .totrow .amt{color:var(--gold)}
+  .btn-checkout{width:100%;cursor:pointer;border:0;border-radius:14px;padding:16px;color:#fff;font-family:'Orbitron';
+    font-weight:700;font-size:.9rem;background:linear-gradient(135deg,var(--green),var(--neon-cyan));color:#04231a;
+    box-shadow:0 0 24px rgba(61,255,136,.5)}
+
+  /* ---------- Checkout ---------- */
+  .field{margin-top:14px}
+  .field label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:6px;letter-spacing:.5px}
+  .field input, .field textarea{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:12px;
+    color:var(--text);font-family:'Poppins';padding:12px;font-size:.9rem}
+  .delivery-toggle{display:flex;gap:10px;margin-top:6px}
+  .delivery-toggle label{flex:1;cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:13px;text-align:center;
+    font-size:.85rem;color:var(--muted);transition:.2s;display:flex;flex-direction:column;gap:4px;align-items:center}
+  .delivery-toggle input{display:none}
+  .delivery-toggle label .ic{font-size:1.4rem}
+  .delivery-toggle input:checked + .ic ~ *,.delivery-toggle label.sel{border-color:var(--neon-blue);
+    background:rgba(31,182,255,.16);color:#fff;box-shadow:0 0 16px rgba(31,182,255,.35)}
+  .err{color:#ff6b8a;font-size:.78rem;margin-top:10px;display:none}
+
+  footer{text-align:center;padding:30px 20px 40px;color:var(--muted);font-size:.8rem;border-top:1px solid var(--line)}
+  footer a{color:var(--neon-cyan);text-decoration:none;font-weight:600}
+  footer .socials{margin-top:10px;display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+
+  @media(max-width:560px){
+    .hero h1{font-size:2rem}
+    .head-brand .t1{font-size:1rem}
+    .cart-toggle span.lbl{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LANGUAGE GATE ============ -->
+<div id="lang-gate">
+  <img src="assets/logo.jpeg" alt="Frost Lab">
+  <p data-i18n="gate_choose">Elige tu idioma · Choose your language</p>
+  <div class="lang-btns">
+    <button class="lang-btn" onclick="setLang('es',true)">Español</button>
+    <button class="lang-btn" onclick="setLang('en',true)">English</button>
+  </div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="head-brand">
+    <img src="assets/logo.jpeg" alt="Frost Lab logo">
+    <div>
+      <div class="t1">FROST LAB</div>
+      <div class="t2" data-i18n="brand_sub">GRANIZADOS DE LICOR</div>
+    </div>
+  </div>
+  <div class="head-actions">
+    <div class="lang-switch">
+      <button id="es-btn" onclick="setLang('es')">ES</button>
+      <button id="en-btn" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="cart-toggle" onclick="openCart()">
+      🛒 <span class="lbl" data-i18n="cart">Carrito</span>
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <h1 data-i18n="hero_title">MENÚ FROST LAB</h1>
+  <div class="sub" data-i18n="hero_sub">DONDE EL FRÍO SE VUELVE ADICCIÓN</div>
+  <p class="tag" data-i18n="hero_tag">El sabor que está dando de qué hablar ❄️🔥</p>
+  <div class="promo">
+    <span data-i18n="promo1">Todos los granizados por solo <b>$15</b></span>
+    <span data-i18n="promo2">Premium <b>$17</b></span>
+    <span data-i18n="promo3">🚚 Servicio a domicilio</span>
+    <span id="wed-chip" class="wed-chip" style="display:none" onclick="showPromo()">🎉 <b data-i18n="promo_wed">Promo de Miércoles</b></span>
+  </div>
+</section>
+
+<!-- ============ MENU ============ -->
+<main class="container">
+  <div class="grid" id="menu-grid"></div>
+
+  <h2 class="section-title" data-i18n="extras_title">✨ Extras disponibles</h2>
+  <p class="section-sub" data-i18n="extras_sub">Agrégalos a cualquier granizado al momento de ordenar.</p>
+  <div class="grid" id="extras-info"></div>
+</main>
+
+<!-- ============ ITEM MODAL ============ -->
+<div class="overlay" id="item-overlay">
+  <div class="modal" id="item-modal"></div>
+</div>
+
+<!-- ============ WEDNESDAY PROMO ============ -->
+<div class="overlay" id="promo-overlay">
+  <div class="promo-modal">
+    <button class="promo-close" onclick="closePromo()">✕</button>
+    <img id="promo-img" src="assets/promo-miercoles.jpeg" alt="Promo Miércoles Frost Lab"
+         onerror="this.style.display='none';document.getElementById('promo-fallback').style.display='flex'">
+    <div id="promo-fallback" class="promo-fallback" style="display:none">
+      <div class="pf-tag" data-i18n="pf_tag">SOLO LOS MIÉRCOLES</div>
+      <div class="pf-h1" data-i18n="pf_h1">Si compras más de 3 granizados</div>
+      <div class="pf-h2" data-i18n="pf_h2">cada granizado viene con tu <b>EXTRA SHOT</b> 🧪</div>
+    </div>
+    <button class="btn-checkout promo-cta" onclick="closePromo()" data-i18n="promo_cta">¡Aprovecha, ordena ahora! ❄️</button>
+  </div>
+</div>
+
+<!-- ============ CART DRAWER ============ -->
+<aside id="cart">
+  <div class="cart-head">
+    <h2 data-i18n="your_order">Tu pedido</h2>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cart-body"></div>
+  <div class="cart-foot" id="cart-foot"></div>
+</aside>
+<div class="overlay" id="cart-overlay" onclick="closeCart()"></div>
+
+<footer>
+  <div data-i18n="footer_slogan">🧊 FROST LAB — Más frío, más sabor, más adicción.</div>
+  <div class="socials">
+    <a href="https://instagram.com/frost.labbb" target="_blank">📷 @frost.labbb</a>
+    <a href="https://api.whatsapp.com/send/?phone=15512627216" target="_blank">💬 +1 (551) 262-7216</a>
+  </div>
+</footer>
+
+<script>
+/* ============ DATA ============ */
+const WHATSAPP = "15512627216";
+
+const FLAVORS = [
+  { id:"mango", price:15, premium:false, img:"🥭", photo:"mango.png",
+    name:{es:"Mango Maracuyá", en:"Mango Passion Fruit"},
+    liquor:{es:"Con Tequila", en:"With Tequila"},
+    desc:{es:"La frescura tropical del mango y el maracuyá se mezclan con tequila reposado para una explosión de sabor irresistible.",
+          en:"The tropical freshness of mango and passion fruit blended with reposado tequila for an irresistible flavor explosion."} },
+  { id:"bonbon", price:15, premium:false, img:"🍭", photo:"bonbon.png",
+    name:{es:"Bon Bon Bum", en:"Bon Bon Bum"},
+    liquor:{es:"Con Vodka", en:"With Vodka"},
+    desc:{es:"El inconfundible sabor de Bon Bon Bum que despierta tu niño interior, con el toque perfecto de vodka especial.",
+          en:"The unmistakable Bon Bon Bum lollipop flavor that awakens your inner child, with the perfect touch of special vodka."} },
+  { id:"maracuya", price:15, premium:false, img:"🍊", photo:"maracuya.png",
+    name:{es:"Maracuyá Explosión Tropical", en:"Passion Fruit Tropical Blast"},
+    liquor:{es:"Con Aguardiente", en:"With Aguardiente"},
+    desc:{es:"Maracuyá, gomitas y un toque ácido que estalla en tu boca, perfecto con aguardiente antioqueño.",
+          en:"Passion fruit, gummies and a sour touch that bursts in your mouth, perfect with aguardiente."} },
+  { id:"pina", price:17, premium:true, img:"🥥", photo:"pina.png",
+    name:{es:"Piña Colada Premium", en:"Piña Colada Premium"},
+    liquor:{es:"Con Ron Bacardí", en:"With Bacardí Rum"},
+    desc:{es:"Piña, coco, crema de coco y ron Bacardí Carta Blanca. Un clásico tropical en su máxima expresión.",
+          en:"Pineapple, coconut, coconut cream and Bacardí Carta Blanca rum. A tropical classic at its finest."} },
+  { id:"manzana", price:15, premium:false, img:"🥝", photo:"manzana.png",
+    name:{es:"Manzana Verde con Kiwi", en:"Green Apple & Kiwi"},
+    liquor:{es:"Con Ron Blanco Bracarle", en:"With Bracarle White Rum"},
+    desc:{es:"Manzana verde, kiwi, gomitas ácidas y ron blanco Bracarle. Un sabor fresco, ácido y delicioso.",
+          en:"Green apple, kiwi, sour gummies and Bracarle white rum. A fresh, sour and delicious flavor."} },
+  { id:"lyche", price:17, premium:true, img:"🍾", photo:"lyche.png",
+    name:{es:"Lyche con Champaña", en:"Lychee with Champagne"},
+    liquor:{es:"Premium", en:"Premium"},
+    desc:{es:"Delicadas lyches, gomitas y el toque elegante de champaña para un sabor exclusivo y refrescante.",
+          en:"Delicate lychees, gummies and the elegant touch of champagne for an exclusive and refreshing flavor."} },
+];
+
+const EXTRAS = [
+  { id:"shot", price:3, img:"💉", name:{es:"Shot extra", en:"Extra shot"} },
+  { id:"gomitas", price:2, img:"🧸", name:{es:"Gomitas extra", en:"Extra gummies"} },
+  { id:"fruta", price:2, img:"🍍", name:{es:"Fruta extra", en:"Extra fruit"} },
+  { id:"bobas", price:2, img:"🫐", name:{es:"Bobas de fruta", en:"Fruit boba"} },
+  { id:"dulces", price:2, img:"🍬", name:{es:"Dulces ácidos", en:"Sour candies"} },
+];
+
+const I18N = {
+  es:{
+    gate_choose:"Elige tu idioma · Choose your language",
+    brand_sub:"GRANIZADOS DE LICOR", cart:"Carrito",
+    hero_title:"MENÚ FROST LAB", hero_sub:"DONDE EL FRÍO SE VUELVE ADICCIÓN",
+    hero_tag:"El sabor que está dando de qué hablar ❄️🔥",
+    promo1:"Todos los granizados por solo <b>$15</b>", promo2:"Premium <b>$17</b>", promo3:"🚚 Servicio a domicilio",
+    promo_wed:"Promo de Miércoles", promo_cta:"¡Aprovecha, ordena ahora! ❄️",
+    pf_tag:"SOLO LOS MIÉRCOLES", pf_h1:"Si compras más de 3 granizados", pf_h2:"cada granizado viene con tu <b>EXTRA SHOT</b> 🧪",
+    extras_title:"✨ Extras disponibles", extras_sub:"Agrégalos a cualquier granizado al momento de ordenar.",
+    your_order:"Tu pedido", add:"Agregar", premium:"EXÓTICO & PREMIUM",
+    modal_qty:"Cantidad", modal_extras:"Agrega más frost (extras)", modal_notes:"Observaciones",
+    modal_notes_ph:"Ej: poco hielo, sin gomitas, extra ácido...", modal_cancel:"Cancelar", modal_add:"Agregar al carrito",
+    cart_empty:"Tu carrito está vacío", cart_empty_sub:"¡Agrega tu granizado favorito! 😋",
+    total:"Total", checkout:"Finalizar pedido", each:"c/u",
+    co_title:"Datos de entrega", co_name:"Nombre", co_name_ph:"Tu nombre",
+    co_delivery:"¿Cómo lo quieres?", co_home:"Domicilio", co_pickup:"Recoger",
+    co_addr:"Dirección", co_addr_ph:"Calle, número, colonia, referencias",
+    co_phone:"Teléfono", co_phone_ph:"Tu número de contacto",
+    co_send:"Enviar pedido por WhatsApp", co_back:"← Volver al carrito",
+    err_name:"Escribe tu nombre.", err_phone:"Escribe tu teléfono.", err_addr:"Escribe tu dirección de entrega.",
+    footer_slogan:"🧊 FROST LAB — Más frío, más sabor, más adicción.",
+    wa_new:"NUEVO PEDIDO", wa_name:"Nombre", wa_phone:"Teléfono", wa_delivery:"Entrega",
+    wa_home:"Domicilio 🛵", wa_pickup:"Paso a recoger 🏪", wa_addr:"Dirección", wa_order:"PEDIDO", wa_notes:"Nota",
+    wa_total:"TOTAL", wa_foot:"Enviado desde la web Frost Lab ❄️"
+  },
+  en:{
+    gate_choose:"Choose your language · Elige tu idioma",
+    brand_sub:"LIQUOR SLUSHIES", cart:"Cart",
+    hero_title:"FROST LAB MENU", hero_sub:"WHERE COLD BECOMES ADDICTION",
+    hero_tag:"The flavor everyone's talking about ❄️🔥",
+    promo1:"All slushies for just <b>$15</b>", promo2:"Premium <b>$17</b>", promo3:"🚚 Delivery available",
+    promo_wed:"Wednesday Deal", promo_cta:"Grab it, order now! ❄️",
+    pf_tag:"WEDNESDAYS ONLY", pf_h1:"Buy more than 3 slushies", pf_h2:"and each one comes with your <b>EXTRA SHOT</b> 🧪",
+    extras_title:"✨ Available extras", extras_sub:"Add them to any slushie when you order.",
+    your_order:"Your order", add:"Add", premium:"EXOTIC & PREMIUM",
+    modal_qty:"Quantity", modal_extras:"Add more frost (extras)", modal_notes:"Notes",
+    modal_notes_ph:"E.g: less ice, no gummies, extra sour...", modal_cancel:"Cancel", modal_add:"Add to cart",
+    cart_empty:"Your cart is empty", cart_empty_sub:"Add your favorite slushie! 😋",
+    total:"Total", checkout:"Checkout", each:"ea",
+    co_title:"Delivery details", co_name:"Name", co_name_ph:"Your name",
+    co_delivery:"How do you want it?", co_home:"Delivery", co_pickup:"Pickup",
+    co_addr:"Address", co_addr_ph:"Street, number, neighborhood, references",
+    co_phone:"Phone", co_phone_ph:"Your contact number",
+    co_send:"Send order via WhatsApp", co_back:"← Back to cart",
+    err_name:"Please enter your name.", err_phone:"Please enter your phone.", err_addr:"Please enter your delivery address.",
+    footer_slogan:"🧊 FROST LAB — Colder, tastier, more addictive.",
+    wa_new:"NEW ORDER", wa_name:"Name", wa_phone:"Phone", wa_delivery:"Fulfillment",
+    wa_home:"Delivery 🛵", wa_pickup:"Pickup 🏪", wa_addr:"Address", wa_order:"ORDER", wa_notes:"Note",
+    wa_total:"TOTAL", wa_foot:"Sent from the Frost Lab website ❄️"
+  }
+};
+
+/* ============ STATE ============ */
+let lang = "es";
+let cart = [];               // {uid, id, qty, extras:{id:qty}, notes}
+let editUid = null;          // uid being edited in modal
+let modalExtras = {};        // temp extras in modal
+const t = k => (I18N[lang][k] ?? k);
+
+/* ============ LANGUAGE ============ */
+function setLang(l, fromGate){
+  lang = l;
+  document.documentElement.lang = l;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.innerHTML = t(el.dataset.i18n); });
+  document.getElementById("es-btn").classList.toggle("active", l==="es");
+  document.getElementById("en-btn").classList.toggle("active", l==="en");
+  renderMenu(); renderExtrasInfo(); renderCart();
+  document.getElementById("wed-chip").style.display = isWednesday() ? "inline-block" : "none";
+  if(fromGate){
+    document.getElementById("lang-gate").classList.add("hidden");
+    if(isWednesday()) showPromo();
+  }
+}
+
+/* ============ WEDNESDAY PROMO ============ */
+// Wednesday = day 3. Add ?promo to the URL to preview it any day.
+function isWednesday(){ return new Date().getDay()===3 || new URLSearchParams(location.search).has("promo"); }
+function showPromo(){ document.getElementById("promo-overlay").classList.add("show"); }
+function closePromo(){ document.getElementById("promo-overlay").classList.remove("show"); }
+
+/* ============ RENDER MENU ============ */
+function renderMenu(){
+  document.getElementById("menu-grid").innerHTML = FLAVORS.map(f=>`
+    <div class="card photo-card ${f.premium?'premium':''}">
+      <img class="flavor-img" src="assets/${f.photo}" alt="${f.name[lang]}" loading="lazy" onclick="openItem('${f.id}')">
+      <button class="add-btn full" onclick="openItem('${f.id}')">＋ ${t('add')} · $${f.price}</button>
+    </div>`).join("");
+}
+
+function renderExtrasInfo(){
+  document.getElementById("extras-info").innerHTML = EXTRAS.map(e=>`
+    <div class="card" style="text-align:center">
+      <h3 style="font-size:2.2rem">${e.img}</h3>
+      <div class="liquor" style="margin-top:8px">${e.name[lang]}</div>
+      <div class="price" style="font-size:1.3rem;margin-top:8px">$${e.price}</div>
+    </div>`).join("");
+}
+
+/* ============ ITEM MODAL ============ */
+function openItem(id, uid){
+  const f = FLAVORS.find(x=>x.id===id);
+  editUid = uid || null;
+  let qty = 1;
+  modalExtras = {};
+  if(uid){
+    const it = cart.find(c=>c.uid===uid);
+    qty = it.qty; modalExtras = {...it.extras};
+  }
+  document.getElementById("item-modal").innerHTML = `
+    <h3>${f.img} ${f.name[lang]}</h3>
+    <div class="liquor">${f.liquor[lang]}</div>
+    <div class="mprice">$${f.price} ${t('each')}</div>
+    <div class="qty">
+      <span class="lbl">${t('modal_qty')}</span>
+      <div class="stepper">
+        <button onclick="mQty(-1)">−</button>
+        <span class="val" id="m-qty">${qty}</span>
+        <button onclick="mQty(1)">＋</button>
+      </div>
+    </div>
+    <div class="extras-title">${t('modal_extras')}</div>
+    ${EXTRAS.map(e=>`
+      <div class="extra-row">
+        <div class="info"><span>${e.img} ${e.name[lang]}</span><small>+$${e.price} ${t('each')}</small></div>
+        <div class="stepper">
+          <button onclick="mExtra('${e.id}',-1)">−</button>
+          <span class="val" id="ex-${e.id}">${modalExtras[e.id]||0}</span>
+          <button onclick="mExtra('${e.id}',1)">＋</button>
+        </div>
+      </div>`).join("")}
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeItem()">${t('modal_cancel')}</button>
+      <button class="btn-primary" onclick="saveItem('${f.id}')">${t('modal_add')}</button>
+    </div>`;
+  document.getElementById("item-overlay").classList.add("show");
+}
+function mQty(d){
+  const el=document.getElementById("m-qty");
+  el.textContent = Math.max(1, parseInt(el.textContent)+d);
+}
+function mExtra(id,d){
+  const el=document.getElementById("ex-"+id);
+  const v=Math.max(0, (parseInt(el.textContent)||0)+d);
+  el.textContent=v; if(v){modalExtras[id]=v;} else {delete modalExtras[id];}
+}
+function closeItem(){ document.getElementById("item-overlay").classList.remove("show"); editUid=null; }
+function saveItem(id){
+  const qty=parseInt(document.getElementById("m-qty").textContent);
+  const extras={...modalExtras};
+  if(editUid){
+    const it=cart.find(c=>c.uid===editUid);
+    it.qty=qty; it.extras=extras;
+  } else {
+    cart.push({uid:Date.now()+"-"+Math.random().toString(36).slice(2,6), id, qty, extras});
+  }
+  closeItem(); renderCart(); openCart();
+}
+
+/* ============ CART ============ */
+function itemTotal(it){
+  const f=FLAVORS.find(x=>x.id===it.id);
+  let ex=0; for(const k in it.extras){ ex += EXTRAS.find(e=>e.id===k).price * it.extras[k]; }
+  return (f.price + ex) * it.qty;
+}
+function cartTotal(){ return cart.reduce((s,it)=>s+itemTotal(it),0); }
+function cartCount(){ return cart.reduce((s,it)=>s+it.qty,0); }
+
+function renderCart(){
+  document.getElementById("cart-count").textContent = cartCount();
+  const body=document.getElementById("cart-body");
+  const foot=document.getElementById("cart-foot");
+  if(!cart.length){
+    body.innerHTML=`<div class="cart-empty"><span>🧪</span>${t('cart_empty')}<br><small>${t('cart_empty_sub')}</small></div>`;
+    foot.innerHTML=""; return;
+  }
+  body.innerHTML = cart.map(it=>{
+    const f=FLAVORS.find(x=>x.id===it.id);
+    const exList=Object.keys(it.extras).map(k=>{
+      const e=EXTRAS.find(x=>x.id===k);
+      return `<li>+ ${e.name[lang]} x${it.extras[k]}</li>`;
+    }).join("");
+    return `<div class="citem">
+      <div class="top">
+        <div class="name">${f.img} ${f.name[lang]}<small>${f.liquor[lang]}</small></div>
+        <div class="lineprice">$${itemTotal(it)}</div>
+      </div>
+      ${exList?`<ul class="ex">${exList}</ul>`:''}
+      <div class="ctrls">
+        <div class="stepper">
+          <button onclick="cQty('${it.uid}',-1)">−</button>
+          <span class="val">${it.qty}</span>
+          <button onclick="cQty('${it.uid}',1)">＋</button>
+        </div>
+        <button class="remove" onclick="editItem('${it.uid}')">✎</button>
+        <button class="remove" onclick="removeItem('${it.uid}')">🗑</button>
+      </div>
+    </div>`;
+  }).join("");
+  foot.innerHTML=`
+    <div class="totrow"><span>${t('total')}</span><span class="amt">$${cartTotal()}</span></div>
+    <button class="btn-checkout" onclick="openCheckout()">${t('checkout')} →</button>`;
+}
+function cQty(uid,d){ const it=cart.find(c=>c.uid===uid); it.qty=Math.max(1,it.qty+d); renderCart(); }
+function editItem(uid){ const it=cart.find(c=>c.uid===uid); openItem(it.id,uid); }
+function removeItem(uid){ cart=cart.filter(c=>c.uid!==uid); renderCart(); }
+
+function openCart(){ document.getElementById("cart").classList.add("open"); document.getElementById("cart-overlay").classList.add("show"); }
+function closeCart(){ document.getElementById("cart").classList.remove("open"); document.getElementById("cart-overlay").classList.remove("show"); }
+
+/* ============ CHECKOUT ============ */
+function openCheckout(){
+  const foot=document.getElementById("cart-foot");
+  const body=document.getElementById("cart-body");
+  body.innerHTML=`
+    <h3 style="font-family:'Orbitron';margin-bottom:6px">${t('co_title')}</h3>
+    <div class="field">
+      <label>${t('co_delivery')}</label>
+      <div class="delivery-toggle" id="dtoggle">
+        <label class="sel" data-mode="home" onclick="selMode(this)"><span class="ic">🛵</span>${t('co_home')}</label>
+        <label data-mode="pickup" onclick="selMode(this)"><span class="ic">🏪</span>${t('co_pickup')}</label>
+      </div>
+    </div>
+    <div class="field"><label>ℹ️ ${t('co_name')}</label><input id="co-name" placeholder="${t('co_name_ph')}"></div>
+    <div class="field" id="addr-field"><label>📍 ${t('co_addr')}</label><input id="co-addr" placeholder="${t('co_addr_ph')}"></div>
+    <div class="field"><label>📱 ${t('co_phone')}</label><input id="co-phone" type="tel" placeholder="${t('co_phone_ph')}"></div>
+    <div class="err" id="co-err"></div>`;
+  foot.innerHTML=`
+    <div class="totrow"><span>💵 ${t('total')}</span><span class="amt">$${cartTotal()}</span></div>
+    <button class="btn-checkout" onclick="sendOrder()">${t('co_send')}</button>
+    <button class="btn-ghost" style="width:100%;margin-top:10px" onclick="renderCart()">${t('co_back')}</button>`;
+}
+let deliveryMode="home";
+function selMode(el){
+  document.querySelectorAll("#dtoggle label").forEach(l=>l.classList.remove("sel"));
+  el.classList.add("sel"); deliveryMode=el.dataset.mode;
+  document.getElementById("addr-field").style.display = deliveryMode==="home" ? "block":"none";
+}
+
+/* ============ SEND TO WHATSAPP ============ */
+function sendOrder(){
+  const name=document.getElementById("co-name").value.trim();
+  const phone=document.getElementById("co-phone").value.trim();
+  const addr=(document.getElementById("co-addr")||{}).value?.trim()||"";
+  const err=document.getElementById("co-err");
+  err.style.display="none";
+  if(!name){ showErr(t('err_name')); return; }
+  if(!phone){ showErr(t('err_phone')); return; }
+  if(deliveryMode==="home" && !addr){ showErr(t('err_addr')); return; }
+
+  const L=I18N[lang];
+  let msg = `🍧❄️ ${L.wa_new} · FROST LAB ❄️🍧\n\n`;
+  msg += `ℹ️ ${L.wa_name}: ${name}\n`;
+  msg += `📱 ${L.wa_phone}: ${phone}\n`;
+  msg += `🚚 ${L.wa_delivery}: ${deliveryMode==="home"?L.wa_home:L.wa_pickup}\n`;
+  if(deliveryMode==="home") msg += `📍 ${L.wa_addr}: ${addr}\n`;
+  msg += `\n📋 ${L.wa_order}:\n`;
+  cart.forEach((it,i)=>{
+    const f=FLAVORS.find(x=>x.id===it.id);
+    msg += `${i+1}) ${f.name[lang]} x${it.qty} — $${itemTotal(it)}\n`;
+    for(const k in it.extras){
+      const e=EXTRAS.find(x=>x.id===k);
+      msg += `   ➕ ${e.name[lang]} x${it.extras[k]} ($${e.price*it.extras[k]*it.qty})\n`;
+    }
+  });
+  msg += `\n💵 ${L.wa_total}: $${cartTotal()}\n`;
+  msg += `\n${L.wa_foot}`;
+
+  const url = `https://api.whatsapp.com/send/?phone=${WHATSAPP}&text=${encodeURIComponent(msg)}&type=phone_number&app_absent=0`;
+  window.open(url, "_blank");
+}
+function showErr(m){ const e=document.getElementById("co-err"); e.textContent=m; e.style.display="block"; }
+function escapeHtml(s){ return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ============ INIT ============ */
+setLang("es");
+</script>
+</body>
+</html>
