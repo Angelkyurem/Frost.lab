@@ -509,9 +509,17 @@ const FLAVORS_RI = [
           en:"A creamy slushie with Baileys, coffee and chocolate, an exquisite flavor combining the best of liquor with espresso intensity."} },
 ];
 
-// Boston: 6 sabores, todos a $20 (las fotos aún muestran el precio de RI)
-const BOSTON_IDS = ["mango","bonbon","maracuya","pina","manzana","lyche"];
-const FLAVORS_BOS = BOSTON_IDS.map(id => ({ ...FLAVORS_RI.find(f=>f.id===id), price:20 }));
+// Boston: todos a $20, con sus propias fotos en assets/bos/
+const NARANJA = { id:"naranja", premium:false, img:"🍊",
+  name:{es:"Naranja con Vodka", en:"Orange with Vodka"},
+  liquor:{es:"Con Vodka Absolut", en:"With Absolut Vodka"},
+  desc:{es:"Un granizado refrescante de naranja con vodka Absolut, gomitas de dulce y rodajas naturales. El equilibrio perfecto entre dulce y adicción.",
+        en:"A refreshing orange slushie with Absolut vodka, candy gummies and natural orange slices. The perfect balance between sweet and addictive."} };
+const BOSTON_IDS = ["mango","bonbon","maracuya","pina","manzana","lyche","espresso","naranja"];
+const FLAVORS_BOS = BOSTON_IDS.map(id => ({
+  ...(FLAVORS_RI.find(f=>f.id===id) || NARANJA), price:20,
+  photo:{ es:`bos/${id}.webp`, en:`bos/${id}_en.webp` } }));
+FLAVORS_BOS.find(f=>f.id==="manzana").liquor = {es:"Con Bacardí", en:"With Bacardí"};
 
 const SEDES = {
   ri:  { name:"Rhode Island", logo:"assets/logo.jpeg",         wa:"15512627216", waLabel:"+1 (551) 262-7216",
