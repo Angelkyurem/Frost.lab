@@ -1,0 +1,6 @@
+# Solo se sube la pagina: index.html y la carpeta assets/.
+# Todo lo demas (fotos originales, backups, imagenes/, fuentes sueltas) queda solo en tu PC.
+/*
+!/index.html
+!/assets/
+!/.gitignore
